@@ -106,15 +106,16 @@ class ClientCommand():
   def outputConsole(self, output):
     self.output = output
     if self.stderr.channel.recv_exit_status() != 0:
-      print(f"erreur : {self.stderr.readlines()}")
+      self.output = self.stdout.readlines()
+      labelConsole.config(text="\n".join(self.output))
       fichierError = open("log/"+ str(datetime.now().date())+".txt", "a")
-      fichierError.write("\nerror["+str(datetime.now().time())+"] :\n" + str(self.stderr.readlines()))
+      fichierError.write("\nerror["+str(datetime.now().time())+"] :\n".join(str(self.output)))
       fichierError.close()
     else:
       self.output = self.stdout.readlines()
       labelConsole.config(text="\n".join(self.output))
-      fichieroutput = open("log/"+str(datetime.now().date())+".txt", "a")
-      fichieroutput.write("\noutput["+str(datetime.now().time())+"] :\n" + str(self.stderr.readlines()))
+      fichieroutput = open("GUI/log/"+str(datetime.now().date())+".txt", "a")
+      fichieroutput.write("\noutput["+str(datetime.now().time())+"] :\n".join(str(self.output)))
       fichieroutput.close()
 
 clientCommand = ClientCommand()
