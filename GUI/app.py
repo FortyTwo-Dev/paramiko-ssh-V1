@@ -1,7 +1,12 @@
 from datetime import datetime
 import paramiko
+import json
 from tkinter import *
 import webbrowser
+
+sessionsNamesList = [
+  "",
+]
 
 window = Tk()
 window.title("Command Linux Server")
@@ -28,6 +33,9 @@ class ClientCommand():
     self.user = user
     self.passwrd = passwrd
     self.connect()
+
+  # def saveSessions(self):
+
 
   def customDeletePorts(self, deletePort):
     self.deletePort = deletePort
@@ -104,54 +112,56 @@ class ClientCommand():
     self.outputConsole(self.stdout)
 
   def outputConsole(self, output):
+    date = "GUI/log/"+ str(datetime.now().date())+".txt"
+    time = "\noutput["+str(datetime.now().time())+"] :"
     self.output = output
     if self.stderr.channel.recv_exit_status() != 0:
       self.output = self.stdout.readlines()
       labelConsole.config(text="\n".join(self.output))
-      fichierError = open("log/"+ str(datetime.now().date())+".txt", "a")
-      fichierError.write("\nerror["+str(datetime.now().time())+"] :\n".join(str(self.output)))
+      fichierError = open(date, "a")
+      fichierError.write(time + "\n".join(self.output))
       fichierError.close()
     else:
       self.output = self.stdout.readlines()
       labelConsole.config(text="\n".join(self.output))
-      fichieroutput = open("GUI/log/"+str(datetime.now().date())+".txt", "a")
-      fichieroutput.write("\noutput["+str(datetime.now().time())+"] :\n".join(str(self.output)))
+      fichieroutput = open(date, "a")
+      fichieroutput.write(time + "\n".join(self.output))
       fichieroutput.close()
 
 clientCommand = ClientCommand()
 
 #delete port of the fireWall
-buttonDeletePort8080 = Button(window, text="deletePort8080", command=clientCommand.deletePort8080)
+buttonDeletePort8080 = Button(window, text="DeletePort8080", command=clientCommand.deletePort8080)
 buttonDeletePort8080.grid(row=0, column=1, padx=20,pady=15)
-buttonDeletePort25565 = Button(window, text="deletePort25565", command=clientCommand.deletePort25565)
+buttonDeletePort25565 = Button(window, text="DeletePort25565", command=clientCommand.deletePort25565)
 buttonDeletePort25565.grid(row=1, column=1, padx=20, pady=15)
-buttonDeletePort5657 = Button(window, text="deletePort5657", command=clientCommand.deletePort5657)
+buttonDeletePort5657 = Button(window, text="DeletePort5657", command=clientCommand.deletePort5657)
 buttonDeletePort5657.grid(row=2, column=1, padx=20, pady=15)
 
 #add port of the fireWall
-buttonAllowPort8080 = Button(window, text="allowPort8080", command=clientCommand.allowPort8080)
+buttonAllowPort8080 = Button(window, text="AllowPort8080", command=clientCommand.allowPort8080)
 buttonAllowPort8080.grid(row=0, column=2, padx=20,pady=15)
-buttonAllowPort25565 = Button(window, text="allowPort25565", command=clientCommand.allowPort25565)
+buttonAllowPort25565 = Button(window, text="AllowPort25565", command=clientCommand.allowPort25565)
 buttonAllowPort25565.grid(row=1, column=2, padx=20,pady=15)
-buttonAllowPort5657 = Button(window, text="allowPort5657", command=clientCommand.allowPort5657)
+buttonAllowPort5657 = Button(window, text="AllowPort5657", command=clientCommand.allowPort5657)
 buttonAllowPort5657.grid(row=2, column=2, padx=20,pady=15)
 
 #enable/disable fireWall
-buttonDisableFireWall = Button(window, text="disableFireWall", command=clientCommand.disableFireWall)
+buttonDisableFireWall = Button(window, text="DisableFireWall", command=clientCommand.disableFireWall)
 buttonDisableFireWall.grid(row=3, column=2, padx=20,pady=15)
-buttonEnableFireWall = Button(window, text="enableFireWall", command=clientCommand.enableFireWall)
+buttonEnableFireWall = Button(window, text="EnableFireWall", command=clientCommand.enableFireWall)
 buttonEnableFireWall.grid(row=3, column=1, padx=20,pady=15)
 
 #look status of fireWall
-buttonStatusVerbosePort = Button(window, text="statusVerbosePort", command=clientCommand.statusVerbosePort)
+buttonStatusVerbosePort = Button(window, text="StatusVerbosePort", command=clientCommand.statusVerbosePort)
 buttonStatusVerbosePort.grid(row=4, column=1, padx=20, pady=15)
-buttonStatusVerbosePort = Button(window, text="statusNumberedPort", command=clientCommand.statusNumberedPort)
+buttonStatusVerbosePort = Button(window, text="StatusNumberedPort", command=clientCommand.statusNumberedPort)
 buttonStatusVerbosePort.grid(row=4, column=2, padx=20, pady=15)
 
 #add/delete custom port
-buttonDeleteCustomPort = Button(window, text="deleteCustomPort", command= lambda: clientCommand.customDeletePorts(customPortContent.get()))
+buttonDeleteCustomPort = Button(window, text="DeleteCustomPort", command= lambda: clientCommand.customDeletePorts(customPortContent.get()))
 buttonDeleteCustomPort.grid(row=5, column=1, padx=20, pady=15)
-buttonAllowCustomPort = Button(window, text="allowCustomPort", command= lambda: clientCommand.customAddPorts(customPortContent.get()))
+buttonAllowCustomPort = Button(window, text="AllowCustomPort", command= lambda: clientCommand.customAddPorts(customPortContent.get()))
 buttonAllowCustomPort.grid(row=5, column=2, padx=20, pady=15)
 
 entryCustomPort = Entry(window, width=7, bg='#a2a2a6')
@@ -191,8 +201,16 @@ passwrdContent.set("passorwd...")
 entryPasswrd["textvariable"] = passwrdContent
 
 #Save informations and connect
-buttonConnect = Button(window, text="connect", command= lambda: clientCommand.initVarAndConnect(ipContent.get(), portContent.get(), userContent.get(), passwrdContent.get()))
+buttonConnect = Button(window, text="Connect", command= lambda: clientCommand.initVarAndConnect(ipContent.get(), portContent.get(), userContent.get(), passwrdContent.get()))
 buttonConnect.grid(row=2, column=3, padx=20, pady=15)
+
+#load information
+buttonLoadSession = Button(window, text="Load", command= lambda: clientCommand)
+buttonLoadSession.grid(row=2, column=4, padx=20, pady=15)
+
+#save informations in files.json
+buttonSaveSession = Button(window, text="Save", command= lambda: clientCommand)
+buttonSaveSession.grid(row=3, column=4, padx=20, pady=15)
 
 #TopLevel new window console
 topLevelConsole = Toplevel(window)
@@ -221,6 +239,14 @@ canvasConsole.create_window((0,0), window=frameSecondConsole, anchor="nw")
 labelConsole = Message(frameSecondConsole, text="Console output")
 labelConsole.pack(fill="both", side="right" and "top")
 
+#Menu déroulant
+sessionsNamesContent = StringVar(window)
+sessionsNamesContent.set(sessionsNamesList[0])
+
+optionMenuSessionsNames = OptionMenu(window, sessionsNamesContent, *sessionsNamesList)
+optionMenuSessionsNames.config(width=20)
+optionMenuSessionsNames.grid(row=3, column=3, padx=20, pady=15)
+
 #Menu
 mainMenu = Menu(window)
 
@@ -235,7 +261,25 @@ mainMenu.add_cascade(label="Menu", menu=menu1)
 
 window.config(menu=mainMenu)
 
-window.geometry("560x340")
+window.geometry("640x340")
 window.mainloop()
 
-#log and error
+# menu déroulant avec des noms de session, sélection de ces noms dans les entry a button for load sessions
+# a button to save a session
+# save in files .json 
+# {
+#   session : [
+#     {
+#       name : "",
+#       ip : "",
+#       username : "",
+#       port : "",  
+#     },
+#     {
+#       name : "",
+#       ip : "",
+#       username : "",
+#       port : "",  
+#     }
+#   ]
+# }
