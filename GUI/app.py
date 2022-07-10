@@ -3,15 +3,19 @@ import paramiko
 import json
 from tkinter import *
 import webbrowser
+import os
 
+PATH = "GUI/sessions/"
+F_LIST = os.listdir(PATH)
 sessionsNamesList = [
   "",
 ]
+for f in F_LIST:
+    if f.endswith(".json"):
+        sessionsNamesList.append(f.removesuffix(".json"))
 
 window = Tk()
 window.title("Command Linux Server")
-print(datetime.now().time())
-print(datetime.now().date())
 
 class ClientCommand():
   def __init__(self, ip = None, port0 = None, user = None, passwrd = None, output = None):
@@ -22,10 +26,19 @@ class ClientCommand():
     self.output = output
 
   def connect(self):
+    self.connected = False
+    if self.connected:
+      buttonConnect.config(bg="green")
+    else:
+      buttonConnect.config(bg="red")
     self.client = paramiko.SSHClient()
     self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    self.client.connect(self.ip, self.port0, self.user, self.passwrd)  
+    self.client.connect(self.ip, self.port0, self.user, self.passwrd)
     self.connected = True
+    if self.connected:
+      buttonConnect.config(bg="green")
+    else:
+      buttonConnect.config(bg="red")
 
   def initVarAndConnect(self, ip, port0, user, passwrd):
     self.ip = ip
@@ -34,8 +47,35 @@ class ClientCommand():
     self.passwrd = passwrd
     self.connect()
 
-  # def saveSessions(self):
+  def saveSessions(self, ip, port0, user):
+    self.ip = ip
+    self.port0 = port0
+    self.user = user
+    sessionsDict = {
+      "username": self.user,
+      "ip": self.ip,
+      "port": self.port0
+    }
+    with open('GUI/sessions/'+self.user+"_["+self.ip+"].json", 'w') as usernameIpAndPortSave:
+      json.dump(sessionsDict, usernameIpAndPortSave)
 
+  def loadSessions(self, nameOfSession):
+    self.nameOfSession = nameOfSession
+    openSession = open("GUI/sessions/"+self.nameOfSession+".json", 'r')
+    sessionContent = openSession.read()
+    loadJson = json.loads(sessionContent)
+
+    #load and put in userContent
+    userLoadContent = loadJson['username']
+    userContent.set(userLoadContent)
+
+    #load and put in ipContent
+    ipLoadContent = loadJson['ip']
+    ipContent.set(ipLoadContent)
+
+    #load and put in portContent  
+    portLoadContent = loadJson['port']
+    portContent.set(portLoadContent)
 
   def customDeletePorts(self, deletePort):
     self.deletePort = deletePort
@@ -205,11 +245,11 @@ buttonConnect = Button(window, text="Connect", command= lambda: clientCommand.in
 buttonConnect.grid(row=2, column=3, padx=20, pady=15)
 
 #load information
-buttonLoadSession = Button(window, text="Load", command= lambda: clientCommand)
+buttonLoadSession = Button(window, text="Load", command= lambda: clientCommand.loadSessions(sessionsNamesContent.get()))
 buttonLoadSession.grid(row=2, column=4, padx=20, pady=15)
 
 #save informations in files.json
-buttonSaveSession = Button(window, text="Save", command= lambda: clientCommand)
+buttonSaveSession = Button(window, text="Save", command= lambda: clientCommand.saveSessions(ipContent.get(), portContent.get(), userContent.get()))
 buttonSaveSession.grid(row=3, column=4, padx=20, pady=15)
 
 #TopLevel new window console
@@ -263,23 +303,3 @@ window.config(menu=mainMenu)
 
 window.geometry("640x340")
 window.mainloop()
-
-# menu déroulant avec des noms de session, sélection de ces noms dans les entry a button for load sessions
-# a button to save a session
-# save in files .json 
-# {
-#   session : [
-#     {
-#       name : "",
-#       ip : "",
-#       username : "",
-#       port : "",  
-#     },
-#     {
-#       name : "",
-#       ip : "",
-#       username : "",
-#       port : "",  
-#     }
-#   ]
-# }

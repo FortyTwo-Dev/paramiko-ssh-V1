@@ -1,0 +1,96 @@
+
+output[11:41:17.033947] :etlm2006
+
+[sudo] password for admin-s: 
+
+Status: active
+
+
+
+     To                         Action      From
+
+     --                         ------      ----
+
+[ 1] 5657                       ALLOW IN    Anywhere                  
+
+[ 2] 8080                       ALLOW IN    Anywhere                  
+
+[ 3] 25565                      ALLOW IN    Anywhere                  
+
+[ 4] 46542/tcp                  ALLOW IN    Anywhere                  
+
+[ 5] 5657 (v6)                  ALLOW IN    Anywhere (v6)             
+
+[ 6] 8080 (v6)                  ALLOW IN    Anywhere (v6)             
+
+[ 7] 25565 (v6)                 ALLOW IN    Anywhere (v6)             
+
+[ 8] 46542/tcp (v6)             ALLOW IN    Anywhere (v6)             
+
+
+
+output[11:41:36.256947] :etlm2006
+
+[sudo] password for admin-s: 
+
+Status: active
+
+Logging: on (low)
+
+Default: deny (incoming), allow (outgoing), disabled (routed)
+
+New profiles: skip
+
+
+
+To                         Action      From
+
+--                         ------      ----
+
+5657                       ALLOW IN    Anywhere                  
+
+8080                       ALLOW IN    Anywhere                  
+
+25565                      ALLOW IN    Anywhere                  
+
+46542/tcp                  ALLOW IN    Anywhere                  
+
+5657 (v6)                  ALLOW IN    Anywhere (v6)             
+
+8080 (v6)                  ALLOW IN    Anywhere (v6)             
+
+25565 (v6)                 ALLOW IN    Anywhere (v6)             
+
+46542/tcp (v6)             ALLOW IN    Anywhere (v6)             
+
+
+
+output[12:14:37.989910] :etlm2006
+
+[sudo] password for admin-s: 
+
+Status: active
+
+
+
+     To                         Action      From
+
+     --                         ------      ----
+
+[ 1] 5657                       ALLOW IN    Anywhere                  
+
+[ 2] 8080                       ALLOW IN    Anywhere                  
+
+[ 3] 25565                      ALLOW IN    Anywhere                  
+
+[ 4] 46542/tcp                  ALLOW IN    Anywhere                  
+
+[ 5] 5657 (v6)                  ALLOW IN    Anywhere (v6)             
+
+[ 6] 8080 (v6)                  ALLOW IN    Anywhere (v6)             
+
+[ 7] 25565 (v6)                 ALLOW IN    Anywhere (v6)             
+
+[ 8] 46542/tcp (v6)             ALLOW IN    Anywhere (v6)             
+
+
